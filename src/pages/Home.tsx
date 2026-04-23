@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useMousePosition } from '@/hooks/useMousePosition';
 import { ArrowRight } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -31,7 +30,6 @@ export default function Home() {
   const servicesRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const mouse = useMousePosition();
   const [currentIdx, setCurrentIdx] = useState(0);
 
   // Hero entrance animation

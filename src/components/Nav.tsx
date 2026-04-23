@@ -3,8 +3,7 @@ import { Link, useLocation } from 'react-router';
 import { gsap } from 'gsap';
 
 export default function Nav() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+const [menuOpen, setMenuOpen] = useState(false);
   const [visible, setVisible] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
@@ -15,9 +14,6 @@ export default function Nav() {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
       
-      // Update scrolled state for background changes
-      setScrolled(currentScrollPos > 50);
-
       // Show/hide based on scroll direction
       if (currentScrollPos > prevScrollPos.current && currentScrollPos > 100) {
         setVisible(false);
