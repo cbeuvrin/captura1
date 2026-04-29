@@ -81,7 +81,7 @@ export default function Nosotros() {
           <div className="desc-left">
             <h2 className="text-4xl md:text-5xl font-extrabold text-charcoal mb-6">Captura Films</h2>
             <p className="text-lg text-charcoal/80 leading-relaxed">
-              Captura Films es una empresa integral en el campo del marketing y los medios, especializada en diversas
+              Captura Films is una empresa integral en el campo del marketing y los medios, especializada en diversas
               áreas que van desde la producción de materiales publicitarios hasta la implementación de estrategias de
               marketing 360.
             </p>

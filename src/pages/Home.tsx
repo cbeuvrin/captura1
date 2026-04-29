@@ -7,14 +7,14 @@ import { ArrowRight } from 'lucide-react';
 gsap.registerPlugin(ScrollTrigger);
 
 const services = [
-  { num: '01', title: 'Cine / Video', desc: 'Producción audiovisual de alto impacto' },
-  { num: '02', title: 'Material POP', desc: 'Displays y material para punto de venta' },
-  { num: '03', title: 'Diseño de Stands', desc: 'Stands feriales y exposiciones' },
-  { num: '04', title: 'Marketing 360', desc: 'Estrategias de marketing integral' },
-  { num: '05', title: 'Foto de producto', desc: 'Fotografía profesional de productos' },
-  { num: '06', title: 'Animación', desc: 'Animación 2D y motion graphics' },
-  { num: '07', title: 'Diseño web', desc: 'Diseño y desarrollo de sitios web' },
-  { num: '08', title: 'RRSS', desc: 'Gestión de redes sociales' },
+  { name: 'Cine / Video', image: '/images/svc-cine.jpg', desc: 'Producción audiovisual profesional' },
+  { name: 'Material POP', image: '/images/svc-pop.jpg', desc: 'Displays y material para punto de venta' },
+  { name: 'Diseño de Stands', image: '/images/svc-stands.jpg', desc: 'Stands feriales y exposiciones' },
+  { name: 'Marketing 360', image: '/images/svc-marketing.jpg', desc: 'Estrategias de marketing integral' },
+  { name: 'Foto de producto', image: '/images/svc-foto.jpg', desc: 'Fotografía profesional de productos' },
+  { name: 'Animación', image: '/images/svc-animacion.jpg', desc: 'Animación 2D y motion graphics' },
+  { name: 'Diseño web', image: '/images/svc-web.jpg', desc: 'Diseño y desarrollo de sitios web' },
+  { name: 'RRSS', image: '/images/svc-rrss.jpg', desc: 'Gestión de redes sociales' },
 ];
 
 const projects = [
@@ -26,31 +26,83 @@ const projects = [
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const heroContentRef = useRef<HTMLDivElement>(null);
+  const videoSectionRef = useRef<HTMLElement>(null);
+  const videoWrapperRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [activeService, setActiveService] = useState(0);
 
-  // Hero entrance animation
+  // Hero and Video animations
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const heroChars = heroRef.current?.querySelectorAll('.hero-char');
-      const tags = heroRef.current?.querySelectorAll('.hero-tag');
-
-      if (heroChars) {
+      // Hero entrance
+      const logoChars = heroRef.current?.querySelectorAll('.hero-logo-char');
+      if (logoChars) {
         gsap.fromTo(
-          heroChars,
-          { y: '120%', opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.04, duration: 1.2, ease: 'power4.out', delay: 0.6 }
+          logoChars,
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.05, duration: 1.2, ease: 'power4.out', delay: 0.4 }
         );
       }
 
-      if (tags) {
-        gsap.fromTo(
-          tags,
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: 'power3.out', delay: 1.2 }
+      const subtext = heroRef.current?.querySelector('.hero-subtext');
+      if (subtext) {
+        gsap.to(subtext, {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          delay: 1.2
+        });
+      }
+
+      // Parallax effect for Hero content (slower move up)
+      if (heroContentRef.current && heroRef.current) {
+        const logoContainer = heroRef.current.querySelector('h1');
+        const subtext = heroRef.current.querySelector('.hero-subtext');
+
+        if (logoContainer) {
+          gsap.to(logoContainer, {
+            y: 150, 
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            }
+          });
+        }
+
+        if (subtext) {
+          gsap.to(subtext, {
+            y: 200,
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            }
+          });
+        }
+      }
+
+      // Video Expansion (Zoom) as it scrolls up
+      if (videoSectionRef.current && videoWrapperRef.current) {
+        gsap.fromTo(videoWrapperRef.current, 
+          { width: "60%" },
+          { 
+            width: "90%",
+            scrollTrigger: {
+              trigger: videoSectionRef.current,
+              start: "top bottom",
+              end: "top top",
+              scrub: true,
+            }
+          }
         );
       }
     }, heroRef);
@@ -58,13 +110,13 @@ export default function Home() {
     return () => ctx.revert();
   }, []);
 
-  // Timer to alternate colors for the hero text
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIdx((prev) => (prev + 1) % 2);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
+  // Timer to alternate colors for the hero text - removed as text is gone
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setCurrentIdx((prev) => (prev + 1) % 2);
+  //   }, 4000);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   // Scroll animations for various sections
   useEffect(() => {
@@ -181,50 +233,98 @@ export default function Home() {
       {/* Hero Section */}
       <section
         ref={heroRef}
-        className="min-h-[100dvh] bg-black flex flex-col items-center justify-center relative overflow-hidden px-4"
+        className="h-[100dvh] bg-white flex flex-col items-center justify-center relative z-10 overflow-hidden px-6 md:px-10"
       >
-        {/* Background Slider removed as requested */}
+        <div ref={heroContentRef} className="relative w-full max-w-[90vw] mx-auto">
+          {/* Logo with Dark Video Mask Test */}
+          <div className="w-full flex items-center justify-center mb-12 overflow-hidden relative">
+            <video 
+              src="/video/video4.mp4" 
+              autoPlay 
+              muted={true}
+              loop 
+              playsInline 
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter: 'brightness(0.3)' }}
+            />
+            <h1 
+              className="relative text-black font-black tracking-tighter leading-none text-center select-none flex flex-nowrap justify-center w-full whitespace-nowrap bg-white mix-blend-screen py-4"
+              style={{ fontSize: 'clamp(56px, 18vw, 600px)' }}
+            >
+              {"CAPTURA".split("").map((char, i) => (
+                <span 
+                  key={i} 
+                  className="hero-logo-char inline-block transition-colors duration-300 hover:text-[#e70209] cursor-default"
+                  onMouseEnter={(e) => {
+                    gsap.to(e.currentTarget, {
+                      y: 40,
+                      duration: 0.1,
+                      ease: "power2.out",
+                      overwrite: true,
+                      onComplete: () => {
+                        gsap.to(e.currentTarget, {
+                          y: 0,
+                          duration: 0.6,
+                          ease: "elastic.out(1, 0.3)"
+                        });
+                      }
+                    });
+                  }}
+                  onMouseLeave={(e) => {
+                    gsap.to(e.currentTarget, {
+                      y: 0,
+                      duration: 0.4,
+                      ease: "power2.out",
+                      overwrite: true
+                    });
+                  }}
+                >
+                  {char}
+                </span>
+              ))}
+            </h1>
+          </div>
 
-        {/* Hero Text */}
-        <div className="relative z-10 text-center">
-          <h1 className="text-display leading-[0.85]" style={{ fontSize: 'clamp(60px, 15vw, 220px)' }}>
-            <div className="overflow-hidden py-2">
-              <span 
-                className={`hero-line block transition-colors duration-1000 ${currentIdx === 0 ? 'text-white' : 'text-[#e70209]'}`}
-              >
-                {"AGENCIA".split("").map((char, i) => (
-                  <span key={i} className="hero-char inline-block">
-                    {char}
-                  </span>
-                ))}
-              </span>
-            </div>
-            <div className="overflow-hidden py-2">
-              <span 
-                className={`hero-line block transition-colors duration-1000 ${currentIdx === 0 ? 'text-[#e70209]' : 'text-white'}`}
-              >
-                {"CREATIVA".split("").map((char, i) => (
-                  <span key={i} className="hero-char inline-block">
-                    {char}
-                  </span>
-                ))}
-              </span>
-            </div>
-          </h1>
-
-          {/* Category Tags */}
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-8 md:mt-12">
-            {['CINE / VIDEO', 'MATERIAL POP', 'STANDS', 'MARKETING 360'].map((tag) => (
-              <span key={tag} className="hero-tag text-label text-muted-grey">
-                {tag}
-              </span>
-            ))}
+          {/* Sub-headline block */}
+          <div className="hero-subtext max-w-[600px] opacity-0 translate-y-10">
+            <p className="text-xl md:text-3xl font-bold text-charcoal leading-tight mb-4">
+              Producimos tu marca en pantalla, en el punto de venta y en el mercado.<br />
+              <span className="font-normal opacity-80 italic">Agencia creativa 360. Resultados superiores.</span>
+            </p>
+            <Link 
+              to="/nosotros" 
+              className="inline-flex items-center gap-2 text-sm font-bold text-muted-grey hover:text-charcoal transition-colors uppercase"
+            >
+              <span className="w-2 h-2 bg-[#e70209]"></span>
+              Read More
+            </Link>
           </div>
         </div>
       </section>
 
+      {/* Video Section */}
+      <section 
+        ref={videoSectionRef}
+        className="relative z-20 bg-white min-h-screen flex items-center justify-center overflow-hidden"
+      >
+        <div 
+          ref={videoWrapperRef} 
+          className="relative aspect-video overflow-hidden shadow-2xl"
+          style={{ width: '60%' }}
+        >
+          <video 
+            src="/video/video.mp4" 
+            autoPlay 
+            muted={true}
+            loop 
+            playsInline 
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </section>
+
       {/* About Snippet Section */}
-      <section ref={aboutRef} className="bg-cream py-24 md:py-32 px-6 md:px-10">
+      <section ref={aboutRef} className="bg-white py-24 md:py-32 px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
           {/* Left Column */}
           <div className="about-left lg:col-span-3">
@@ -232,7 +332,7 @@ export default function Home() {
               <span className="animate-line text-label text-muted-grey block">AGENCIA DE MEDIOS</span>
             </div>
             <div className="overflow-hidden mb-6">
-              <h2 className="animate-line text-4xl md:text-5xl font-extrabold text-charcoal">Captura Films</h2>
+              <h2 className="animate-line text-4xl md:text-5xl font-black text-charcoal tracking-tighter">Captura Films</h2>
             </div>
             <div className="overflow-hidden mb-8">
               <p className="animate-line text-lg text-charcoal/80 leading-relaxed max-w-[520px]">
@@ -274,38 +374,85 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services Grid Section */}
-      <section
-        ref={servicesRef}
-        className="py-24 md:py-36 px-6 md:px-10"
-        style={{ background: 'linear-gradient(180deg, #DEDCD7 0%, rgba(114,47,55,0.05) 100%)' }}
-      >
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-16">
-            <div className="overflow-hidden mb-4">
-              <span className="animate-line text-label text-muted-grey block">NUESTROS SERVICIOS</span>
-            </div>
-            <div className="overflow-hidden">
-              <h2 className="animate-line text-4xl md:text-5xl lg:text-6xl font-extrabold text-charcoal">
-                Soluciones integrales para tu marca
-              </h2>
+      {/* Interactive Services List from Servicios Page */}
+      <section ref={servicesRef} className="bg-white py-24 md:py-32 px-6 md:px-10 border-t border-charcoal/5">
+        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
+          {/* Left Column - Sticky Image */}
+          <div className="lg:col-span-2 hidden lg:block">
+            <div className="sticky top-[120px]">
+              <div className="relative w-full aspect-[4/5] overflow-hidden bg-charcoal/5 rounded-2xl">
+                {services.map((svc, i) => {
+                  const isActive = activeService === i;
+                  const isPast = i < activeService;
+
+                  return (
+                    <img
+                      key={svc.name}
+                      src={svc.image}
+                      alt={svc.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] origin-bottom"
+                      style={{ 
+                        opacity: isActive ? 1 : 0,
+                        transform: isActive 
+                          ? 'translateY(0) scale(1) rotate(0deg)' 
+                          : isPast 
+                            ? 'translateY(-100%) scale(0.9) rotate(-5deg)' 
+                            : 'translateY(100%) scale(1.1) rotate(5deg)',
+                        zIndex: isActive ? 10 : 0
+                      }}
+                      loading="lazy"
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((svc) => (
-              <Link
-                to="/servicios"
-                key={svc.num}
-                className="service-card bg-white p-8 group hover:-translate-y-2 hover:shadow-float transition-all duration-300"
+          {/* Right Column - Service List */}
+          <div className="lg:col-span-3">
+            <div className="overflow-hidden mb-12">
+              <span className="animate-line text-label text-muted-grey block">NUESTROS SERVICIOS</span>
+            </div>
+            {services.map((svc, i) => (
+              <div
+                key={svc.name}
+                className="service-list-item border-b border-charcoal/10 py-6 md:py-8 cursor-pointer group relative"
+                onMouseEnter={() => setActiveService(i)}
               >
-                <span className="text-label text-muted-grey">{svc.num}</span>
-                <h3 className="text-xl md:text-2xl font-bold text-charcoal mt-6">{svc.title}</h3>
-                <p className="text-sm text-muted-grey mt-3">{svc.desc}</p>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#e70209] mt-6 group-hover:gap-2 transition-all">
-                  INFO <ArrowRight size={12} />
-                </span>
-              </Link>
+                {/* Active dot */}
+                <div
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#e70209] transition-opacity duration-300"
+                  style={{ opacity: activeService === i ? 1 : 0 }}
+                />
+
+                <div className="flex items-center justify-between pl-6">
+                  <h3
+                    className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter transition-all duration-400"
+                    style={{
+                      opacity: activeService === i ? 1 : 0.25,
+                      color: activeService === i ? '#e70209' : '#1A1A1A',
+                      transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                  >
+                    {svc.name}
+                  </h3>
+                  <span className="text-label text-muted-grey hidden md:block">{svc.desc}</span>
+                </div>
+
+                {/* Mobile image */}
+                <div className="lg:hidden mt-4 overflow-hidden">
+                  <img
+                    src={svc.image}
+                    alt={svc.name}
+                    className="w-full aspect-video object-cover transition-all duration-500"
+                    style={{
+                      maxHeight: activeService === i ? '200px' : '0',
+                      opacity: activeService === i ? 1 : 0,
+                    }}
+                    loading="lazy"
+                  />
+                </div>
+              </div>
             ))}
           </div>
         </div>

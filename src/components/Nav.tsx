@@ -77,35 +77,14 @@ const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 h-[60px] flex items-center justify-between px-6 md:px-10 transition-all duration-500 bg-cream/95 backdrop-blur-md border-b border-charcoal/10 ${
-          visible || menuOpen ? 'translate-y-0' : '-translate-y-full'
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        className={`fixed top-6 right-6 md:top-10 md:right-10 z-[70] bg-black text-cream px-8 py-3 text-label rounded-none hover:scale-105 transition-all duration-300 shadow-lg ${
+          visible || menuOpen ? 'translate-y-0 opacity-1' : '-translate-y-20 opacity-0'
         }`}
       >
-        <Link to="/" className="flex items-center">
-          <img src="/logo/logo.png" alt="CAPTURA FILMS" className="h-10 md:h-12 w-auto max-w-[120px] md:max-w-[200px] object-contain" />
-        </Link>
-
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="absolute left-1/2 -translate-x-1/2 text-label text-charcoal hover:text-burgundy transition-colors cursor-pointer"
-        >
-          {menuOpen ? 'CERRAR' : 'MENU'}
-        </button>
-
-        <Link
-          to={location.pathname === '/nosotros' ? '/nosotros#cta-section' : '/nosotros'}
-          onClick={(e) => {
-            if (location.pathname === '/nosotros') {
-              e.preventDefault();
-              document.getElementById('cta-section')?.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}
-          className="text-label text-charcoal hover:text-burgundy transition-colors"
-        >
-          CONTACTAR
-        </Link>
-      </nav>
+        {menuOpen ? 'CERRAR' : 'MENU'}
+      </button>
 
       {/* Full Screen Menu Overlay */}
       <div

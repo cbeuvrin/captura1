@@ -69,17 +69,30 @@ export default function Servicios() {
           {/* Left Column - Sticky Image */}
           <div className="lg:col-span-2 hidden lg:block">
             <div className="sticky top-[120px]">
-              <div className="relative w-full aspect-[4/5] overflow-hidden bg-charcoal/5">
-                {services.map((svc, i) => (
-                  <img
-                    key={svc.name}
-                    src={svc.image}
-                    alt={svc.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-                    style={{ opacity: activeService === i ? 1 : 0 }}
-                    loading="lazy"
-                  />
-                ))}
+              <div className="relative w-full aspect-[4/5] overflow-hidden bg-charcoal/5 rounded-2xl">
+                {services.map((svc, i) => {
+                  const isActive = activeService === i;
+                  const isPast = i < activeService;
+
+                  return (
+                    <img
+                      key={svc.name}
+                      src={svc.image}
+                      alt={svc.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] origin-bottom"
+                      style={{ 
+                        opacity: isActive ? 1 : 0,
+                        transform: isActive 
+                          ? 'translateY(0) scale(1) rotate(0deg)' 
+                          : isPast 
+                            ? 'translateY(-100%) scale(0.9) rotate(-5deg)' 
+                            : 'translateY(100%) scale(1.1) rotate(5deg)',
+                        zIndex: isActive ? 10 : 0
+                      }}
+                      loading="lazy"
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
