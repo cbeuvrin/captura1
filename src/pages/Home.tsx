@@ -33,7 +33,7 @@ export default function Home() {
   const servicesRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const [currentIdx, setCurrentIdx] = useState(0);
+
   const [activeService, setActiveService] = useState(0);
 
   // Hero and Video animations
